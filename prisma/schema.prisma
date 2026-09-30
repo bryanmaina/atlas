@@ -1,0 +1,96 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String      @id @default(cuid())
+  name         String
+  skills       String      // Comma-separated or JSON list of employee skills & competencies
+  role         String      @default("CONTRIBUTOR") // ADMIN, VALIDATOR, CONTRIBUTOR
+  email        String      @unique
+  department   String?
+  avatarUrl    String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  authoredDocs Document[]  @relation("AuthoredDocuments")
+  editedDocs   Document[]  @relation("EditedDocuments")
+  signatures   Signature[] @relation("UserSignatures")
+
+  @@index([email])
+  @@index([role])
+}
+
+model Document {
+  id                      String          @id @default(cuid())
+  content                 String          // Document body / specifications
+  status                  String          @default("DRAFT") // DRAFT, PENDING_VALIDATION, VALIDATED, VERIFIED, REJECTED, PUBLISHED
+  title                   String          @default("Untitled Document")
+  slug                    String          @unique
+  summary                 String?
+  category                String          @default("General")
+  tags                    String?
+  version                 Int             @default(1)
+  requiresSignoff         Boolean         @default(false)
+  requiredValidationLevel String          @default("LEVEL_1") // LEVEL_1 (Peer), LEVEL_2 (Technical), LEVEL_3 (Executive Admin)
+
+  authorId                String
+  author                  User            @relation("AuthoredDocuments", fields: [authorId], references: [id], onDelete: Cascade)
+
+  lastEditedById          String?
+  lastEditor              User?           @relation("EditedDocuments", fields: [lastEditedById], references: [id])
+
+  signatures              Signature[]     @relation("DocumentSignatures")
+  chunks                  DocumentChunk[]
+
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+
+  @@index([category])
+  @@index([status])
+  @@index([authorId])
+  @@index([lastEditedById])
+}
+
+model DocumentChunk {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  chunkIndex Int
+  chunkText  String
+  embedding  String   // JSON stringified float vector array
+
+  createdAt  DateTime @default(now())
+
+  @@index([documentId])
+}
+
+model Signature {
+  id              String    @id @default(cuid())
+  documentId      String
+  document        Document  @relation("DocumentSignatures", fields: [documentId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User      @relation("UserSignatures", fields: [userId], references: [id], onDelete: Cascade)
+  validationLevel String    @default("LEVEL_1") // LEVEL_1, LEVEL_2, LEVEL_3
+
+  status          String    @default("PENDING") // PENDING, SIGNED, REJECTED
+  signatureHash   String?   // SHA-256 cryptographic proof
+  ipAddress       String?
+  userAgent       String?
+  comments        String?
+  signedAt        DateTime?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([documentId, userId])
+  @@index([documentId])
+  @@index([userId])
+  @@index([status])
+  @@index([validationLevel])
+}

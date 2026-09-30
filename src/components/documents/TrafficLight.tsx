@@ -38,20 +38,17 @@ export function TrafficLight({
     RED: {
       label: `Unverified (${count}/${requiredSignatures})`,
       tooltip: "Requires 2 distinct user signatures to verify",
-      textColor: "text-rose-400",
-      bgColor: "bg-rose-500/10 border-rose-500/30",
+      badgeClass: "bg-gradient-to-r from-blue-300 to-cyan-300 text-slate-800 shadow-[0_4px_15px_rgba(147,197,253,0.4)]",
     },
     YELLOW: {
       label: `1 of ${requiredSignatures} Signed`,
       tooltip: "1 signature recorded — Awaiting second distinct validator",
-      textColor: "text-amber-300",
-      bgColor: "bg-amber-500/10 border-amber-500/30",
+      badgeClass: "bg-gradient-to-r from-violet-400 to-fuchsia-400 text-white shadow-[0_4px_15px_rgba(167,139,250,0.3)]",
     },
     GREEN: {
       label: `Verified (${count}/${requiredSignatures})`,
       tooltip: "Verified by 2 distinct user signatures",
-      textColor: "text-emerald-300",
-      bgColor: "bg-emerald-500/10 border-emerald-500/30",
+      badgeClass: "bg-gradient-to-r from-emerald-400 to-teal-400 text-white shadow-[0_4px_15px_rgba(52,211,153,0.3)]",
     },
   }[activeState];
 
@@ -60,16 +57,16 @@ export function TrafficLight({
   return (
     <div
       title={meta.tooltip}
-      className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full border ${meta.bgColor} transition-all ${className}`}
+      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${meta.badgeClass} transition-all ${className}`}
     >
       {/* 3-Lamp Traffic Light Housing */}
-      <div className="flex items-center gap-1.5 px-1.5 py-0.5 rounded-full bg-slate-950/80 border border-slate-800 shadow-inner">
+      <div className="flex items-center gap-1.5 px-1.5 py-0.5 rounded-full bg-white/40 border border-white/60 shadow-inner">
         {/* Red Lamp */}
         <span
           className={`rounded-full transition-all duration-300 ${dotSize} ${
             activeState === "RED"
-              ? "bg-rose-500 shadow-[0_0_8px_#f43f5e] ring-1 ring-rose-400 animate-pulse"
-              : "bg-rose-950/60 opacity-30"
+              ? "bg-rose-500 shadow-[0_0_8px_#f43f5e] ring-1 ring-white"
+              : "bg-slate-400/40 opacity-40"
           }`}
         />
 
@@ -77,8 +74,8 @@ export function TrafficLight({
         <span
           className={`rounded-full transition-all duration-300 ${dotSize} ${
             activeState === "YELLOW"
-              ? "bg-amber-400 shadow-[0_0_8px_#f59e0b] ring-1 ring-amber-300 animate-pulse"
-              : "bg-amber-950/60 opacity-30"
+              ? "bg-amber-300 shadow-[0_0_8px_#f59e0b] ring-1 ring-white"
+              : "bg-slate-400/40 opacity-40"
           }`}
         />
 
@@ -86,14 +83,14 @@ export function TrafficLight({
         <span
           className={`rounded-full transition-all duration-300 ${dotSize} ${
             activeState === "GREEN"
-              ? "bg-emerald-400 shadow-[0_0_8px_#10b981] ring-1 ring-emerald-300 animate-pulse"
-              : "bg-emerald-950/60 opacity-30"
+              ? "bg-emerald-300 shadow-[0_0_8px_#10b981] ring-1 ring-white"
+              : "bg-slate-400/40 opacity-40"
           }`}
         />
       </div>
 
       {showLabel && (
-        <span className={`text-[11px] font-semibold tracking-tight ${meta.textColor}`}>
+        <span className="text-[11px] font-semibold tracking-tight">
           {meta.label}
         </span>
       )}

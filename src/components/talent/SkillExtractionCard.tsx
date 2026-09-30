@@ -81,131 +81,126 @@ export function SkillExtractionCard({
   };
 
   return (
-    <div className="rounded-3xl glass-panel p-6 sm:p-8 border border-indigo-500/20 shadow-2xl relative overflow-hidden">
-      {/* Background glow element */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-indigo-500/10 via-cyan-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
-
-      <div className="relative z-10">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Next.js Server Action</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-              Work Description Skill Extractor
-            </h2>
-            <p className="text-sm text-slate-400 mt-1">
-              Extract core technical competencies from an employee&apos;s project logs or resume, then match against the User database.
-            </p>
+    <div className="bg-white rounded-3xl shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] border border-slate-100 p-6 sm:p-8 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-xs font-medium mb-2">
+            <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+            <span>Next.js Server Action</span>
           </div>
-
-          {/* Extraction Engine Indicator */}
-          {extractionMethod && (
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-xs text-slate-300">
-              <Cpu className="w-4 h-4 text-cyan-400" />
-              <span>
-                Engine:{" "}
-                <strong className="text-white font-semibold capitalize">
-                  {extractionMethod === "gemini-api" ? "Gemini Flash API" : "Deterministic Local NLP"}
-                </strong>
-              </span>
-            </div>
-          )}
+          <h2 className="text-2xl font-medium text-slate-800">
+            Work Description Skill Extractor
+          </h2>
+          <p className="text-xs font-medium text-slate-400 mt-1">
+            Extract core technical competencies from an employee&apos;s project logs or resume, then match against the User database.
+          </p>
         </div>
 
-        {/* Preset Sample Templates */}
-        <div className="mb-4">
-          <span className="text-xs font-medium text-slate-400 mr-2 flex items-center gap-1 mb-2">
-            <FileText className="w-3.5 h-3.5 text-slate-500" />
-            Quick Presets:
+        {/* Extraction Engine Indicator */}
+        {extractionMethod && (
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-600">
+            <Cpu className="w-4 h-4 text-blue-500" />
+            <span>
+              Engine:{" "}
+              <strong className="text-slate-800 font-medium capitalize">
+                {extractionMethod === "gemini-api" ? "Gemini Flash API" : "Deterministic Local NLP"}
+              </strong>
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Preset Sample Templates */}
+      <div>
+        <span className="text-xs font-medium text-slate-400 mr-2 flex items-center gap-1 mb-2">
+          <FileText className="w-3.5 h-3.5 text-slate-400" />
+          Quick Presets:
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {SAMPLE_DESCRIPTIONS.map((preset, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => handleSampleClick(preset.text)}
+              className="text-xs px-3.5 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 font-medium transition-colors"
+            >
+              {preset.title}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Text Input */}
+      <div>
+        <textarea
+          value={workDescription}
+          onChange={(e) => setWorkDescription(e.target.value)}
+          rows={4}
+          placeholder="Paste an employee's work description, project summary, or resume achievements..."
+          className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none placeholder:text-slate-400"
+        />
+      </div>
+
+      {error && (
+        <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* Action Button */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <button
+          type="button"
+          onClick={handleExtract}
+          disabled={isPending || !workDescription.trim()}
+          className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 text-white font-medium text-xs shadow-[0_4px_15px_rgba(52,211,153,0.3)] hover:opacity-95 transition-all disabled:opacity-50"
+        >
+          {isPending ? (
+            <>
+              <RefreshCw className="w-4 h-4 animate-spin text-white" />
+              <span>Extracting Skills (Server Action)...</span>
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-4 h-4" />
+              <span>Extract Core Skills (Server Action)</span>
+            </>
+          )}
+        </button>
+
+        {extractedSkills.length > 0 && (
+          <span className="text-xs text-slate-500 flex items-center gap-1.5 font-medium">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+            <span>
+              <strong>{extractedSkills.length}</strong> competencies extracted
+            </span>
           </span>
+        )}
+      </div>
+
+      {/* Extracted Skills Badges */}
+      {extractedSkills.length > 0 && (
+        <div className="pt-6 border-t border-slate-100">
+          <div className="text-xs font-medium text-slate-400 mb-3 flex items-center gap-1.5">
+            <Tag className="w-3.5 h-3.5 text-blue-500" />
+            <span>Extracted Core Skills (Click to query experts)</span>
+          </div>
+
           <div className="flex flex-wrap gap-2">
-            {SAMPLE_DESCRIPTIONS.map((preset, idx) => (
+            {extractedSkills.map((skill) => (
               <button
-                key={idx}
-                type="button"
-                onClick={() => handleSampleClick(preset.text)}
-                className="text-xs px-3 py-1.5 rounded-xl bg-slate-900/60 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-slate-300 transition-colors"
+                key={skill}
+                onClick={() => handleSkillClick(skill)}
+                className="group inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-50 hover:bg-blue-100 border border-blue-200/60 text-blue-700 text-xs font-medium transition-all"
               >
-                {preset.title}
+                <span>{skill}</span>
+                <ArrowRight className="w-3 h-3 text-blue-500 group-hover:translate-x-0.5 transition-transform" />
               </button>
             ))}
           </div>
         </div>
-
-        {/* Text Input */}
-        <div className="relative mb-4">
-          <textarea
-            value={workDescription}
-            onChange={(e) => setWorkDescription(e.target.value)}
-            rows={4}
-            placeholder="Paste an employee's work description, project summary, or resume achievements..."
-            className="w-full glass-input rounded-2xl p-4 text-sm focus:outline-none resize-none placeholder:text-slate-500"
-          />
-        </div>
-
-        {error && (
-          <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {/* Action Button */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <button
-            type="button"
-            onClick={handleExtract}
-            disabled={isPending || !workDescription.trim()}
-            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-semibold text-sm shadow-lg shadow-indigo-500/25 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none"
-          >
-            {isPending ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin text-white" />
-                <span>Extracting Skills (Server Action)...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 text-cyan-200" />
-                <span>Extract Core Skills (Server Action)</span>
-              </>
-            )}
-          </button>
-
-          {extractedSkills.length > 0 && (
-            <span className="text-xs text-slate-400 flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>
-                <strong>{extractedSkills.length}</strong> competencies extracted
-              </span>
-            </span>
-          )}
-        </div>
-
-        {/* Extracted Skills Badges */}
-        {extractedSkills.length > 0 && (
-          <div className="mt-6 pt-6 border-t border-slate-800/80 animate-in fade-in duration-300">
-            <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <Tag className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Extracted Core Skills (Click to query experts)</span>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {extractedSkills.map((skill) => (
-                <button
-                  key={skill}
-                  onClick={() => handleSkillClick(skill)}
-                  className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 text-indigo-200 text-xs font-medium transition-all hover:scale-105 active:scale-95"
-                >
-                  <span>{skill}</span>
-                  <ArrowRight className="w-3 h-3 text-cyan-400 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 }

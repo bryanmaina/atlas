@@ -94,86 +94,83 @@ export function VerificationModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg rounded-3xl glass-panel border border-indigo-500/30 p-6 sm:p-8 shadow-2xl overflow-hidden">
-        {/* Top ambient glow */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-indigo-600/20 via-cyan-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
-
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/30 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg rounded-3xl bg-white/95 backdrop-blur-2xl border border-slate-100 p-6 sm:p-8 shadow-2xl overflow-hidden">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-slate-400 hover:text-white p-1 rounded-xl hover:bg-slate-800 transition-colors"
+          className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1.5 rounded-full hover:bg-slate-100 transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
         {isSuccess ? (
           <div className="py-8 text-center space-y-4 animate-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/30">
+            <div className="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h3 className="text-xl font-bold text-white">
+            <h3 className="text-xl font-medium text-slate-800">
               Signature Recorded Successfully!
             </h3>
-            <p className="text-sm text-slate-300 max-w-sm mx-auto">
+            <p className="text-xs font-medium text-slate-500 max-w-sm mx-auto">
               {isFinalStep
-                ? "Second distinct signature verified. Document status changed to 'Verified' (Green light)!"
-                : "First signature recorded (Yellow light). Awaiting second distinct signature."}
+                ? "Second distinct signature verified. Document status changed to 'Verified'!"
+                : "First signature recorded. Awaiting second distinct signature."}
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Header */}
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-xs font-semibold mb-2">
-                <Users className="w-3.5 h-3.5 text-cyan-400" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-xs font-medium mb-2">
+                <Users className="w-3.5 h-3.5 text-blue-500" />
                 <span>
                   Information Verification Workflow (Signature {targetStep} of 2)
                 </span>
               </div>
-              <h2 className="text-xl font-bold text-white tracking-tight">
+              <h2 className="text-2xl font-medium text-slate-800">
                 Execute Verification Signature
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs font-medium text-slate-400 mt-1">
                 Document requires exactly two distinct user signatures to elevate status to{" "}
-                <strong className="text-emerald-400">&lsquo;Verified&rsquo;</strong>.
+                <strong className="text-emerald-600 font-medium">&lsquo;Verified&rsquo;</strong>.
               </p>
             </div>
 
             {/* Document & Signer Info Box */}
-            <div className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2 text-xs">
-              <div className="flex items-center justify-between text-slate-400">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2 text-xs">
+              <div className="flex items-center justify-between text-slate-500">
                 <span>Document:</span>
-                <span className="font-semibold text-slate-200 truncate max-w-[240px]">
+                <span className="font-medium text-slate-800 truncate max-w-[240px]">
                   {documentTitle} (v{documentVersion}.0)
                 </span>
               </div>
-              <div className="flex items-center justify-between text-slate-400">
+              <div className="flex items-center justify-between text-slate-500">
                 <span>Active Signer:</span>
-                <span className="font-semibold text-indigo-300">
+                <span className="font-medium text-blue-600">
                   {currentUser?.name || "Anonymous"} ({currentUser?.role})
                 </span>
               </div>
-              <div className="flex items-center justify-between text-slate-400 pt-1 border-t border-slate-800/60">
+              <div className="flex items-center justify-between text-slate-500 pt-2 border-t border-slate-200/60">
                 <span>Workflow Impact:</span>
                 <span
-                  className={`font-semibold ${
-                    isFinalStep ? "text-emerald-400" : "text-amber-400"
+                  className={`font-medium ${
+                    isFinalStep ? "text-emerald-600" : "text-violet-600"
                   }`}
                 >
                   {isFinalStep
                     ? "Completes Dual Verification (Changes status to Verified)"
-                    : "Sets Yellow Light (Requires 1 more distinct signature)"}
+                    : "Sets 1 of 2 Signed (Awaiting 2nd distinct signature)"}
                 </span>
               </div>
             </div>
 
             {/* Error Banner */}
             {error && (
-              <div className="p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-start gap-2.5">
-                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400 mt-0.5" />
+              <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2.5">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-500 mt-0.5" />
                 <div className="space-y-1">
-                  <span className="font-semibold block">Signature Rejected</span>
+                  <span className="font-medium block">Signature Rejected</span>
                   <span>{error}</span>
                 </div>
               </div>
@@ -181,21 +178,21 @@ export function VerificationModal({
 
             {/* Formal Statement */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-medium text-slate-500">
                 Attestation Statement
               </label>
               <textarea
                 value={statement}
                 onChange={(e) => setStatement(e.target.value)}
                 rows={2}
-                className="w-full glass-input rounded-xl p-3 text-xs focus:outline-none resize-none text-slate-200"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none text-slate-700"
                 required
               />
             </div>
 
             {/* Comments */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-medium text-slate-500">
                 Validation Comments / Notes
               </label>
               <input
@@ -203,13 +200,13 @@ export function VerificationModal({
                 value={comments}
                 onChange={(e) => setComments(e.target.value)}
                 placeholder="e.g., Reviewed against ISO 27001 standards."
-                className="w-full glass-input rounded-xl px-3 py-2 text-xs focus:outline-none text-slate-200"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-700"
               />
             </div>
 
             {/* Cryptographic Assurance Note */}
-            <div className="flex items-center gap-2 text-[11px] text-slate-400">
-              <Lock className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+            <div className="flex items-center gap-2 text-xs font-medium text-slate-400">
+              <Lock className="w-3.5 h-3.5 text-blue-500 shrink-0" />
               <span>
                 Generates immutable SHA-256 hash proof with server-verified identity.
               </span>
@@ -221,24 +218,24 @@ export function VerificationModal({
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+                className="px-4 py-2 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-medium transition-all"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-semibold text-xs shadow-lg shadow-emerald-500/25 transition-all disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 text-white font-medium text-xs shadow-[0_4px_15px_rgba(52,211,153,0.3)] hover:opacity-95 transition-all disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    <span>Signing & Verifying...</span>
+                    <span>Signing &amp; Verifying...</span>
                   </>
                 ) : (
                   <>
                     <FileCheck className="w-3.5 h-3.5" />
-                    <span>Confirm & Sign ({targetStep} of 2)</span>
+                    <span>Confirm &amp; Sign ({targetStep} of 2)</span>
                   </>
                 )}
               </button>

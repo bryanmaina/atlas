@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.gitignore
+*.db
+*.db-journal
+/data/*.db
+.env
+.env.local
+.env.production
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store

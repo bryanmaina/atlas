@@ -2,11 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
-  LayoutGrid,
-  Users,
-  FileText,
   Search,
   Plus,
   Bell,
@@ -16,7 +12,6 @@ import { useCurrentUser } from "@/components/providers/UserContext";
 import { GlobalSearchModal } from "@/components/search/GlobalSearchModal";
 
 export function TopBar() {
-  const pathname = usePathname();
   const { currentUser, users, setCurrentUser } = useCurrentUser();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -33,47 +28,27 @@ export function TopBar() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const tabs = [
-    { href: "/", label: "Dashboard", icon: LayoutGrid },
-    { href: "/talent-map", label: "Employees", icon: Users },
-    { href: "/documents", label: "Reports", icon: FileText },
-  ];
-
   return (
     <>
       <header className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
-        {/* Left Section: Pill Tabs & Search */}
+        {/* Left Section: Clean Pill Search Field */}
         <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center p-1 bg-white border border-slate-200/80 rounded-full shadow-sm">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = pathname === tab.href;
-              return (
-                <Link
-                  key={tab.href}
-                  href={tab.href}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all ${
-                    isActive
-                      ? "bg-slate-100 text-slate-800 shadow-sm"
-                      : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  <span>{tab.label}</span>
-                </Link>
-              );
-            })}
-
-            {/* Quick Search Button */}
-            <button
-              type="button"
-              onClick={() => setIsSearchOpen(true)}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors ml-1"
-              title="Search (Cmd+K)"
-            >
-              <Search className="w-4 h-4" />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsSearchOpen(true)}
+            className="group flex items-center justify-between gap-3 px-4 py-2 bg-white border border-slate-200/80 rounded-full shadow-sm text-xs text-slate-400 hover:text-slate-600 hover:border-slate-300 transition-all w-72 sm:w-80 cursor-pointer"
+            title="Search (Cmd+K)"
+          >
+            <div className="flex items-center gap-2.5">
+              <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 transition-colors" />
+              <span className="font-normal text-slate-400 group-hover:text-slate-600">
+                Search documents, employees...
+              </span>
+            </div>
+            <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium text-slate-400 bg-slate-100 rounded border border-slate-200">
+              ⌘K
+            </kbd>
+          </button>
         </div>
 
         {/* Right Section: Team Avatars Stack, Add Action, Profile Switcher & Notifications */}
